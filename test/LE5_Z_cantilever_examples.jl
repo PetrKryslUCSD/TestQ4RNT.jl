@@ -157,7 +157,7 @@ function _executemodel(formul, input = "nle5-q4.inp", nrefs = 0, visualize = tru
 
     # Visualization
     if visualize
-        scattersysvec!(dchi, (L/8)/maximum(abs.(U)).*U)
+        scattersysvec!(dchi, (L/8)/maximum(abs.(U)).*U, DOF_KIND_ALL)
         update_rotation_field!(Rfield0, dchi)
         plots = cat(plot_space_box([[0 0 -L/2]; [L/2 L/2 L/2]]),
         #plot_nodes(fens),
