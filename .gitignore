@@ -1,0 +1,16 @@
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+*.vtk
+*.vtu
+*.jls
+*.jld
+*.png
+*.log
+*.json
+*.sublime-workspace
+docs/build/
+.vscode/
+*.bak
+
+*.pdf
