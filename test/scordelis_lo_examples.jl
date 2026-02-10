@@ -49,12 +49,12 @@ cylindrical!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, feid::FInt, qpi
     return csmatout
 end
 
-function _execute_dsg_model(formul, n = 8, visualize = true)
+function _execute(formul, n = 8, visualize = true)
 
 
     tolerance = R / n / 10
     # fens, fes = Q4blockrand(40/360*2*pi,L/2,n,n);
-    fens, fes = Q4block(40 / 360 * 2 * pi, L / 2, n, n, :b)
+    fens, fes = Q4block(40 / 360 * 2 * pi, L / 2, n, n)
     fens.xyz = xyz3(fens)
     for i in 1:count(fens)
         a = fens.xyz[i, 1]
@@ -105,13 +105,13 @@ function _execute_dsg_model(formul, n = 8, visualize = true)
 
     # Midpoint of the free edge
     nl = selectnode(fens; box = Float64[sin(40 / 360 * 2 * pi) * 25 sin(40 / 360 * 2 * pi) * 25 L / 2 L / 2 -Inf Inf], inflate = tolerance)
-    lfemm = FEMMBase(IntegDomain(fes, TriRule(3)))
+    lfemm = FEMMBase(IntegDomain(fes, GaussRule(2, 2)))
     fi = ForceIntensity(FFlt[0, 0, -90, 0, 0, 0])
-    F = distribloads(lfemm, geom0, dchi, fi, 3)
+    F = distribloads(lfemm, geom0, dchi, fi, 2)
 
     # Solve
-    U = K \ F
-    scattersysvec!(dchi, U[:])
+    solve_blocked!(dchi, K, F)
+    U = gathersysvec(dchi, DOF_KIND_ALL)
     result = dchi.values[nl, 3][1]
     @info "Solution: $(result), $(round(result/analyt_sol*100, digits = 4))%"
 
@@ -146,7 +146,7 @@ function _execute_dsg_model(formul, n = 8, visualize = true)
 
         vtkwrite("scordelis_lo_examples-$(n)-uur.vtu", fens, fes; scalars = scalars, vectors = [("u", dchi.values[:, 1:3]), ("ur", dchi.values[:, 4:6])])
 
-        scattersysvec!(dchi, (L / 8) / maximum(abs.(U)) .* U)
+        scattersysvec!(dchi, (L / 8) / maximum(abs.(U)) .* U, DOF_KIND_ALL)
         update_rotation_field!(Rfield0, dchi)
         plots = cat(plot_space_box([[0 0 -L / 2]; [L / 2 L / 2 L / 2]]),
             #plot_nodes(fens),
@@ -164,7 +164,7 @@ function test_convergence(ns = [4, 6, 8, 16, 32], visualize = false)
     @info "Scordelis-Lo shell"
     results = []
     for n in ns
-        v = _execute_dsg_model(formul, n, visualize)
+        v = _execute(formul, n, visualize)
         push!(results, v / (-0.3024) * 100)
     end
     return ns, results
