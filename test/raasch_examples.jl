@@ -64,17 +64,17 @@ function _execute(input = "raasch_s4_1x9.inp", drilling_stiffness_scale = 1.0, v
         fens = output["fens"]
         fes = output["fesets"][1]
 
-        connected = findunconnnodes(fens, fes);
-        fens, new_numbering = compactnodes(fens, connected);
-        fes = renumberconn!(fes, new_numbering);
+        # connected = findunconnnodes(fens, fes);
+        # fens, new_numbering = compactnodes(fens, connected);
+        # fes = renumberconn!(fes, new_numbering);
 
-        fens, fes = Q4toT3(fens, fes)
+        # fens, fes = Q4toT3(fens, fes)
     # fens, fes = T3refine(fens, fes)# .
     # fens, fes = T3refine(fens, fes)# .
     # fens, fes = T3refine(fens, fes)# .
     end
 
-    @show count(fens), count(fes)
+    @info "Mesh: $(count(fens)) nodes, $(count(fes)) elements"
 
     # plots = cat(plot_space_box([[0 0 -R/2]; [R/2 R/2 R/2]]),
     #     plot_nodes(fens),
@@ -114,7 +114,7 @@ function _execute(input = "raasch_s4_1x9.inp", drilling_stiffness_scale = 1.0, v
 
     # Assemble the system matrix
     associategeometry!(femm, geom0)
-    @show num_normals(femm)
+    # @show num_normals(femm)
     K = stiffness(femm, geom0, u0, Rfield0, dchi);
 
     # Load
