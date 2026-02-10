@@ -3,6 +3,7 @@ Pinched cylinder with diagphram supports and concentrated force
 """
 module pinched_cylinder_examples
 
+using LinearAlgebra
 using FinEtools
 using FinEtools.FTypesModule: FInt, FFlt, FFltMat, FFltVec
 using FinEtools.AlgoBaseModule: solve_blocked!
@@ -36,11 +37,21 @@ function _execute(n = 2, visualize = true)
     
     mater = MatDeforElastIso(DeforModelRed3D, E, nu)
 
-    
+    cylindrical!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, feid::FInt, qpid::FInt) = begin
+        r = -vec(XYZ)
+        r[2] = 0.0
+        csmatout[:, 3] .= vec(r) / norm(vec(r))
+        csmatout[:, 2] .= (0.0, 1.0, 0.0)
+        cross3!(view(csmatout, :, 1), view(csmatout, :, 2), view(csmatout, :, 3))
+        return csmatout
+    end
+    ocsys = CSys(3, 3, cylindrical!)
+
     sfes = FESetShellQ4()
     accepttodelegate(fes, sfes)
-    femm = formul.make(IntegDomain(fes, CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), mater)
-    femm.drilling_stiffness_scale = 0.1
+    femm = formul.make(IntegDomain(fes, 
+        CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), mater)
+    # femm.drilling_stiffness_scale = 0.1
     associategeometry! = formul.associategeometry!
     stiffness = formul.stiffness
 
