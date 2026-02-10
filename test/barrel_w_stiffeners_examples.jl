@@ -47,11 +47,11 @@ function _execute_model(formul, input, visualize = true)
     # fens = output["fens"]
     # fes = output["fesets"][1]
 
-    connected = findunconnnodes(fens, fes);
-    fens, new_numbering = compactnodes(fens, connected);
-    fes = renumberconn!(fes, new_numbering);
+    # connected = findunconnnodes(fens, fes);
+    # fens, new_numbering = compactnodes(fens, connected);
+    # fes = renumberconn!(fes, new_numbering);
 
-    fens, fes = mergenodes(fens, fes, thickness/10)
+    # fens, fes = mergenodes(fens, fes, thickness/10)
     
     # FinEtools.MeshExportModule.H5MESH.write_H5MESH(with_extension(input, "h5mesh"), fens, fes)
     
@@ -127,7 +127,7 @@ end
 
 
 function test_convergence()
-    input = "barrel_w_stiffeners-s3.h5mesh"
+    input = "barrel_w_stiffeners-q4-mesh.h5mesh"
     formul = FEMMShellQ4RNTModule
     @info "Barrel With Stiffeners, free vibration, formulation=$(formul)"
     _execute_model(formul, input, true)

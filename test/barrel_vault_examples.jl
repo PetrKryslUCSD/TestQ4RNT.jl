@@ -31,7 +31,7 @@ using FinEtools.MeshExportModule.VTKWrite: vtkwrite
 
 using Infiltrator
 
-function _execute(input = "barrelvault_s3r_fineirreg.inp", visualize = false)
+function _execute(input = "", visualize = false)
     E = 3.0e6;
     nu = 0.0;
     thickness = 3.0;
@@ -169,9 +169,11 @@ function test_convergence()
     
     @info "Scordelis-Lo Abaqus model"
 
-    _execute("barrelvault_stri3_irreg.inp", false)
+    @warn "Need to generate irregular meshes and test convergence with them. "
 
-    _execute("barrelvault_s3r_fineirreg.inp", false)
+    # _execute("barrelvault_stri3_irreg.inp", false)
+
+    # _execute("barrelvault_s3r_fineirreg.inp", false)
 
     return true
 end
