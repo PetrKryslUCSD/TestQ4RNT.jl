@@ -70,7 +70,6 @@ function _execute(n = 8, visualize = true, exact_normals = false, drilling_stiff
         phi, psi = fens.xyz[i, 1:2]
         fens.xyz[i, :] .= (cos(psi/180*pi) .* cos(phi/180*pi)*R, cos(psi/180*pi) .* sin(phi/180*pi)*R, sin(psi/180*pi) .* R)
     end
-    fens, fes = Q4toT3(fens, fes)
     
     vtkwrite("geom.vtu", fens, fes)
 
@@ -84,11 +83,13 @@ function _execute(n = 8, visualize = true, exact_normals = false, drilling_stiff
     sfes = FESetShellQ4()
     accepttodelegate(fes, sfes)
     if exact_normals
-        femm = formul.make(IntegDomain(fes, TriRule(1), thickness), ocsys, mater)
+        femm = formul.make(IntegDomain(fes, 
+            CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), ocsys, mater)
     else
-        femm = formul.make(IntegDomain(fes, CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), mater)
+        femm = formul.make(IntegDomain(fes, 
+            CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), mater)
     end
-    femm.drilling_stiffness_scale = 0.1 * drilling_stiffness_multiplier
+    # femm.drilling_stiffness_scale = 0.1 * drilling_stiffness_multiplier
     stiffness = formul.stiffness
     associategeometry! = formul.associategeometry!
 
@@ -170,7 +171,7 @@ function _execute(n = 8, visualize = true, exact_normals = false, drilling_stiff
 
         vtkwrite("hemisphere_open-$n-normals.vtu", fens, fes; vectors = [("normals", femm._normals[:, 1:3])])
 
-        scattersysvec!(dchi, (R/4)/maximum(abs.(U)).*U)
+        scattersysvec!(dchi, (R/4)/maximum(abs.(U)).*U, DOF_KIND_ALL)
         update_rotation_field!(Rfield0, dchi)
         plots = cat(plot_space_box([[0 0 -R]; [R R R]]),
         #plot_nodes(fens),
@@ -184,10 +185,9 @@ end
 function test_convergence(ns = [4, 8, 16,] )
     @info "Hemisphere with opening"
     
-    
     results = Float64[]
     for n in ns 
-        v = _execute(n, true)
+        v = _execute(n, false)
         push!(results, v)
     end
     return ns, results
@@ -195,7 +195,6 @@ end
 
 function test_convergence_normals(ns = [4, 8, 16,], exact_normals = false, drilling_stiffness_multiplier =  1.0)
     @info "Hemisphere with opening"
-    
     
     results = Float64[]
     for n in ns 
