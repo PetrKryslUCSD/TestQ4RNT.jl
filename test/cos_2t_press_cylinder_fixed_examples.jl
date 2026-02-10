@@ -119,8 +119,8 @@ function _execute(formul, n = 8, thickness = R/100, visualize = false, distortio
     # Solve
     solve_blocked!(dchi, K, F)
     U = gathersysvec(dchi, DOF_KIND_ALL)
-    strainenergy = 1/2 * U' * K * U
-    @info "Strain Energy: $(round(strainenergy, digits = 9))"
+    strainenergy = 1/2 * U' * F
+    @info "$(n) x $(n) mesh: Strain Energy: $(round(strainenergy, digits = 9))"
 
     # Generate a graphical display of resultants
     ocsys = CSys(3, 3, cylindrical!)
@@ -162,9 +162,10 @@ function _execute(formul, n = 8, thickness = R/100, visualize = false, distortio
 end
 
 function test_convergence(formul, thicknessmult = 1/100, distortion = 0.0)
-    @info "Pressurized Cylindrical shell, fixed ends, formulation=$(formul)"
+    @info "Pressurized Cylindrical shell, fixed ends, \nformulation=$(formul)"
+    @info "Thickness = $(thicknessmult), distortion = $(distortion) "
     results = []
-    ns = [8, 16, 32, 64, 128]
+    ns = [8, 16, 32, 64, 128, 256]
     for n in ns
         push!(results, _execute(formul, n, R*thicknessmult, false, 2*distortion/n))
     end
@@ -204,7 +205,7 @@ let
             style = "solid",
             mark = "$(r[3])"
             },
-            Coordinates([v for v in  zip(1 ./ ns, r[2]) if v[2] !== missing])
+            Coordinates([v for v in  zip(1 ./ ns, abs.(r[2])) if v[2] !== missing])
             )
             push!(objects, p)
             push!(objects, LegendEntry("$(r[1])"))

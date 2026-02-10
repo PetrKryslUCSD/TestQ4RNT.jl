@@ -121,8 +121,8 @@ function _execute(formul, n = 8, thickness = Length/2/100, visualize = false, di
     # Solve
     solve_blocked!(dchi, K, F)
     U = gathersysvec(dchi, DOF_KIND_ALL)
-    strainenergy = 1/2 * U' * K * U
-    @info "Strain Energy: $(round(strainenergy, digits = 9))"
+    strainenergy = 1/2 * U' * F
+    @info "$(n) x $(n) mesh: Strain Energy: $(round(strainenergy, digits = 9))"
 
     # Generate a graphical display of resultants
     ocsys = CSys(3, 3, hyperbolic!)
@@ -150,7 +150,7 @@ function _execute(formul, n = 8, thickness = Length/2/100, visualize = false, di
 
     # Visualization
     if visualize
-        scattersysvec!(dchi, (Length/8)/maximum(abs.(U)).*U)
+        scattersysvec!(dchi, (Length/8)/maximum(abs.(U)).*U, DOF_KIND_ALL)
         update_rotation_field!(Rfield0, dchi)
         plots = cat(plot_space_box([[0 0 -Length/2]; [Length/2 Length/2 Length/2]]),
             #plot_nodes(fens),
@@ -165,10 +165,11 @@ end
 
 function test_convergence(formul, thicknessmult = 1/100, distortion = 0.0)
     @info "Pressurized Hyperbolic shell, fixed ends, formulation=$(formul)"
+    @info "Thickness = $(thicknessmult), distortion = $(distortion) "
     results = []
-    ns = [16, 32, 64, ]
+    ns = [16, 32, 64, 128, 256]
     for n in ns
-        push!(results, _execute(formul, n, Length/2*thicknessmult, true, 2*distortion/n))
+        push!(results, _execute(formul, n, Length/2*thicknessmult, false, 2*distortion/n))
     end
     return ns, results
 end

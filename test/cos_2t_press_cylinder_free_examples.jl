@@ -18,7 +18,7 @@ module cos_2t_press_cylinder_free_examples
 
 using LinearAlgebra
 using FinEtools
-using FinEtools.FTypesModule: FInt, FFlt, FFltMat
+using FinEtools.FTypesModule: FInt, FFlt, FFltMat, FFltVec
 using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtools.MeshModificationModule: distortblock
 using FinEtoolsDeforLinear
@@ -115,8 +115,8 @@ function _execute(formul, n = 8, thickness = R/100, visualize = false, distortio
     # Solve
     solve_blocked!(dchi, K, F)
     U = gathersysvec(dchi, DOF_KIND_ALL)
-    strainenergy = 1/2 * U' * K * U
-    @info "Strain Energy: $(round(strainenergy, digits = 9))"
+    strainenergy = 1/2 * U' * F
+    @info "$(n) x $(n) mesh: Strain Energy: $(round(strainenergy, digits = 9))"
 
     # Generate a graphical display of resultants
     ocsys = CSys(3, 3, cylindrical!)
@@ -158,9 +158,10 @@ function _execute(formul, n = 8, thickness = R/100, visualize = false, distortio
 end
 
 function test_convergence(formul, thicknessmult = 1/100, distortion = 0.0)
-    @info "Pressurized Cylindrical shell, free ends, formulation=$(formul)"
+    @info "Pressurized Cylindrical shell, free ends, \nformulation=$(formul)"
+    @info "Thickness = $(thicknessmult), distortion = $(distortion) "
     results = []
-    ns = [8, 16, 32, 64, 128]
+    ns = [8, 16, 32, 64, 128, 256]
     for n in ns
         push!(results, _execute(formul, n, R*thicknessmult, false, 3*distortion/n))
     end
@@ -221,7 +222,7 @@ let
         {
         xlabel = "Number of Elements / side [ND]",
         ylabel = "Approximate Normalized Error [ND]",
-        xmin = 0.01,
+        xmin = 0.001,
         # xmax = range[2],
         ymin = 0.0001,
         xmode = "log", 
