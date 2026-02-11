@@ -47,7 +47,7 @@ function cylindrical!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, feid::
     return csmatout
 end
 
-function computetrac!(forceout::FFltVec, XYZ::FFltMat, tangents::FFltMat, feid::FInt, qpid::FInt)
+function computetrac!(forceout, XYZ, tangents, feid, qpid)
     r = vec(XYZ); r[2] = 0.0
     r .= vec(r)/norm(vec(r))
     theta = atan(r[3], r[1])
@@ -145,6 +145,16 @@ function _execute(formul, n = 8, thickness = R/100, visualize = false, distortio
         push!(scalars, ("q$nc", fld.values))
     end
     vtkwrite("cos_2t_press_cylinder_fixed-$(n)-$(thickness)-$(distortion)-q.vtu", fens, fes; scalars = scalars, vectors = [("u", dchi.values[:, 1:3])])
+
+    # Visualize the loading
+    p = zeros(count(fens), 3)
+    forceout = zeros(6)
+    for i in 1:count(fens)
+        a=fens.xyz[i, 1]; y=fens.xyz[i, 2];
+        computetrac!(forceout, fens.xyz[i, :], [], 0, 0)
+        p[i, :] .= forceout[1:3]
+    end
+    vtkwrite("cos_2t_press_cylinder_fixed-$(n)-$(thickness)-$(distortion)-p.vtu", fens, fes; vectors = [("p", p)])
 
     # Visualization
     if visualize
