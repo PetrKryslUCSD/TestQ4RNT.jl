@@ -121,7 +121,7 @@ function _execute_full(tL_ratio = 1/100, g = 80*0.1^0, analyt_sol=-9.3355e-5, n 
     return targetu
 end
 
-function _execute_half(orientation = :a, tL_ratio = 1/100, g = 80*0.1^0, analyt_sol=-9.3355e-5, n = 32, visualize = false)
+function _execute_half(tL_ratio = 1/100, g = 80*0.1^0, analyt_sol=-9.3355e-5, n = 32, visualize = false)
     # analytical solution for the vertical deflection and the midpoint of the
     # free edge 
     # Parameters:
@@ -136,7 +136,7 @@ function _execute_half(orientation = :a, tL_ratio = 1/100, g = 80*0.1^0, analyt_
     @info "Mesh: $n elements per side"
 
     tolerance = L/n/1000
-    fens, fes = Q4block(L,L/2,n,Int(round(n/2)),orientation);
+    fens, fes = Q4block(L,L/2,n,Int(round(n/2)));
     fens.xyz = xyz3(fens)
     for i in 1:count(fens)
         x=fens.xyz[i, 1]-L/2; y=fens.xyz[i, 2]-L/2;
@@ -193,7 +193,7 @@ function _execute_half(orientation = :a, tL_ratio = 1/100, g = 80*0.1^0, analyt_
         # Visualization
     if visualize
 
-        vtkwrite("clamped_hypar-$(orientation)-$(n).vtu", fens, fes; vectors = [("u", dchi.values[:, 1:3])])
+        vtkwrite("clamped_hypar-$(n).vtu", fens, fes; vectors = [("u", dchi.values[:, 1:3])])
 
         scattersysvec!(dchi, (L/4)/abs(targetu).*U)
         update_rotation_field!(Rfield0, dchi)
@@ -207,8 +207,7 @@ function _execute_half(orientation = :a, tL_ratio = 1/100, g = 80*0.1^0, analyt_
     return targetu
 end
 
-function test_convergence(orientation = :a)
-    
+function test_convergence()
     tL_ratios = [1/100, 1/1000, 1/10000]; 
     gs = [80*0.1^0, 80*0.1^1, 80*0.1^2]
     analyt_sols = [-9.3355e-5, -6.3941e-3, -5.2988e-1];
@@ -220,7 +219,7 @@ function test_convergence(orientation = :a)
         results = Float64[]
         for n in ns
         # for n in [4, 8, 16, 32, 64, ]
-            r = _execute_half(orientation, tL_ratio, g, analyt_sol, n, false)
+            r = _execute_half(tL_ratio, g, analyt_sol, n, false)
             push!(results, r/analyt_sol)
         end   
         push!(all_results, results)
@@ -229,7 +228,7 @@ function test_convergence(orientation = :a)
     return ns, all_results
 end
 
-function test_0_001(orientation = :a, ns = [8, 16, 32, 48, ])
+function test_0_001(ns = [8, 16, 32, 48, ])
     tL_ratio = 1/1000 
     g = 80*0.1^1
     analyt_sol = -6.3941e-3
@@ -239,7 +238,7 @@ function test_0_001(orientation = :a, ns = [8, 16, 32, 48, ])
     results = Float64[]
     for n in ns
         # for n in [4, 8, 16, 32, 64, ]
-        r = _execute_half(orientation, tL_ratio, g, analyt_sol, n, false)
+        r = _execute_half(tL_ratio, g, analyt_sol, n, false)
         push!(results, r/analyt_sol)
     end   
     
@@ -266,8 +265,8 @@ using PGFPlotsX
 using .clamped_hypar_examples
 
 let
-    for orientation in (:a, :b)
-        ns, all_results = clamped_hypar_examples.test_convergence(orientation)
+    
+        ns, all_results = clamped_hypar_examples.test_convergence()
 
         objects = []
 
@@ -326,8 +325,8 @@ let
         )
 
         display(ax)
-        pgfsave("clamped_hypar_examples-dependence-on-t-L-$(orientation).pdf", ax)
-    end
+        pgfsave("clamped_hypar_examples-dependence-on-t-L.pdf", ax)
+
 end
 
 using PGFPlotsX
@@ -362,9 +361,8 @@ objects = []
 # a Department of Mechanical Engineering, Korea Advanced Institute of Science and Technology, 291 Daehak-ro, Yuseong-gu, 
 MITC3p = ("MITC3+", [4, 8, 16, 32, 64], [0.9533 0.9589 0.9728 0.9868 0.9951], "diamond")
 
-ns, resultsa = clamped_hypar_examples.test_0_001(:a, [4, 8, 16, 32, 64, 128, 256])
-ns, resultsb = clamped_hypar_examples.test_0_001(:b, [4, 8, 16, 32, 64, 128, 256])
-all_results = [("Present (a)", ns, resultsa, "*"), ("Present (b)", ns, resultsb, "o"), MITC3p]
+ns, resultsa = clamped_hypar_examples.test_0_001([4, 8, 16, 32, 64, 128, 256])
+all_results = [("Present", ns, resultsa, "*"), MITC3p]
 
 let
     for r in  all_results
@@ -406,11 +404,7 @@ let
 end
 
 using .clamped_hypar_examples
-ns, all_results = clamped_hypar_examples.test_0_001(:a, 4 .* [24, 48, 96])
-q1, q2, q3 = all_results[:]
-qtrue = (q2^2 - q1 * q3) / (2*q2 - q1 - q3)
-@show (q1, q2, q3) .* -6.3941, qtrue .* -6.3941
-ns, all_results = clamped_hypar_examples.test_0_001(:b, 4 .* [24, 48, 96])
+ns, all_results = clamped_hypar_examples.test_0_001(4 .* [24, 48, 96])
 q1, q2, q3 = all_results[:]
 qtrue = (q2^2 - q1 * q3) / (2*q2 - q1 - q3)
 @show (q1, q2, q3) .* -6.3941, qtrue .* -6.3941
