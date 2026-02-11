@@ -12,5 +12,6 @@
 docs/build/
 .vscode/
 *.bak
+*.h5mesh
 
 *.pdf
