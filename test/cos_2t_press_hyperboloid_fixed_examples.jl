@@ -216,7 +216,7 @@ let
             style = "solid",
             mark = "$(r[3])"
             },
-            Coordinates([v for v in  zip(1 ./ ns, r[2]) if v[2] !== missing])
+            Coordinates([v for v in  zip(1 ./ ns, abs.(r[2])) if v[2] !== missing])
             )
             push!(objects, p)
             push!(objects, LegendEntry("$(r[1])"))
