@@ -108,9 +108,9 @@ function _execute(input = "", visualize = false)
     # Load
     # Midpoint of the free edge
     nl = selectnode(fens; box = Float64[-Inf Inf sin(40/360*2*pi)*R sin(40/360*2*pi)*R L/2 L/2], inflate = tolerance)
-    lfemm = FEMMBase(IntegDomain(fes, TriRule(3)))
+    lfemm = FEMMBase(IntegDomain(fes, GaussRule(2, 2)))
     fi = ForceIntensity(FFlt[-0.625, 0, 0, 0, 0, 0]);
-    F = distribloads(lfemm, geom0, dchi, fi, 3);
+    F = distribloads(lfemm, geom0, dchi, fi, 2);
     
     # @infiltrate
     # Solve

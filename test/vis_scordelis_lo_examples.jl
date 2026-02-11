@@ -108,7 +108,7 @@ function _execute_dsg_model(n = 8, visualize = true)
 
     # Midpoint of the free edge
     nl = selectnode(fens; box = Float64[sin(40/360*2*pi)*25 sin(40/360*2*pi)*25 L/2 L/2 -Inf Inf], inflate = tolerance)
-    lfemm = FEMMBase(IntegDomain(fes, TriRule(3)))
+    lfemm = FEMMBase(IntegDomain(fes, GaussRule(2, 2)))
     fi = ForceIntensity(FFlt[0, 0, -90, 0, 0, 0]);
     F = distribloads(lfemm, geom0, dchi, fi, 3);
     

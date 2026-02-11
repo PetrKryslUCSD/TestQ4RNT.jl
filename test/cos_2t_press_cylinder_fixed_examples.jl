@@ -111,7 +111,7 @@ function _execute(formul, n = 8, thickness = R/100, visualize = false, distortio
 
     # Midpoint of the fixed edge
     # nl = selectnode(fens; box = Float64[R R L/2 L/2 -Inf Inf], inflate = tolerance)
-    lfemm = FEMMBase(IntegDomain(fes, TriRule(3)))
+    lfemm = FEMMBase(IntegDomain(fes, GaussRule(2, 2)))
     
     fi = ForceIntensity(FFlt, 6, computetrac!);
     F = distribloads(lfemm, geom0, dchi, fi, 2);

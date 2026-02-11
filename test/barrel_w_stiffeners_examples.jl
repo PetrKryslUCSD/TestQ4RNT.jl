@@ -37,9 +37,9 @@ function _execute_model(formul, input, visualize = true)
     @info "Mesh: $input"
 
     if !isfile(joinpath(dirname(@__FILE__()), input))
-        success(run(`unzip -qq -d $(dirname(@__FILE__())) $(joinpath(dirname(@__FILE__()), "barrel_w_stiffeners_q4.zip"))`; wait = false))
+        success(run(`unzip -qq -d $(dirname(@__FILE__())) $(joinpath(dirname(@__FILE__()), "barrel_w_stiffeners-q4-mesh.zip"))`; wait = false))
     end
-    output = FinEtools.MeshImportModule.import_ABAQUS(joinpath(dirname(@__FILE__()), input))
+    output = FinEtools.MeshImportModule.import_H5MESH(joinpath(dirname(@__FILE__()), input))
     fens, fes  = output["fens"], output["fesets"][1]
     fens.xyz .*= phun("mm");
 

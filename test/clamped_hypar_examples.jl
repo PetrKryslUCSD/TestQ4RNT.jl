@@ -89,7 +89,7 @@ function _execute_full(tL_ratio = 1/100, g = 80*0.1^0, analyt_sol=-9.3355e-5, n 
 
     # Midpoint of the free edge
     nl = selectnode(fens; box = Float64[L/2 L/2 0 0 -Inf Inf], inflate = tolerance)
-    lfemm = FEMMBase(IntegDomain(fes, TriRule(1)))
+    lfemm = FEMMBase(IntegDomain(fes, GaussRule(2, 2)))
     # computeforce!(forceout, XYZ, tangents, fe_label) = let
     #     n = cross(tangents[:, 1], tangents[:, 2])
     #     n = n / norm(n)
@@ -180,7 +180,7 @@ function _execute_half(orientation = :a, tL_ratio = 1/100, g = 80*0.1^0, analyt_
 
     # Midpoint of the free edge
     nl = selectnode(fens; box = Float64[L/2 L/2 0 0 -Inf Inf], inflate = tolerance)
-    lfemm = FEMMBase(IntegDomain(fes, TriRule(1)))
+    lfemm = FEMMBase(IntegDomain(fes, GaussRule(2, 2)))
     fi = ForceIntensity(FFlt[0, 0, -g, 0, 0, 0]);
     F = distribloads(lfemm, geom0, dchi, fi, 3);
     
