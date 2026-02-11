@@ -67,11 +67,6 @@ function _execute(input = "raasch_s4_1x9.inp", drilling_stiffness_scale = 1.0, v
         # connected = findunconnnodes(fens, fes);
         # fens, new_numbering = compactnodes(fens, connected);
         # fes = renumberconn!(fes, new_numbering);
-
-        # fens, fes = Q4toT3(fens, fes)
-    # fens, fes = T3refine(fens, fes)# .
-    # fens, fes = T3refine(fens, fes)# .
-    # fens, fes = T3refine(fens, fes)# .
     end
 
     @info "Mesh: $(count(fens)) nodes, $(count(fes)) elements"
@@ -84,10 +79,6 @@ function _execute(input = "raasch_s4_1x9.inp", drilling_stiffness_scale = 1.0, v
 
     mater = MatDeforElastIso(DeforModelRed3D, E, nu)
     
-        # Report
-    
-    @info "Mesh: $input"
-
     sfes = FESetShellQ4()
     accepttodelegate(fes, sfes)
     femm = formul.make(IntegDomain(fes, CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), mater)

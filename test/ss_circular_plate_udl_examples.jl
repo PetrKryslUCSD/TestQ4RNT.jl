@@ -14,7 +14,7 @@ using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_m
 
 using Infiltrator
 
-function _execute(mesh_procedure = :q4_t3, n = 2, t_radius_ratio = 0.01, visualize = true)
+function _execute(mesh_procedure = :q4, n = 2, t_radius_ratio = 0.01, visualize = true)
     E = 200*phun("GPa");
     nu = 0.3;
     a = 1.0*phun("m");
@@ -27,13 +27,8 @@ function _execute(mesh_procedure = :q4_t3, n = 2, t_radius_ratio = 0.01, visuali
     formul = FEMMShellQ4RNTModule
 
     tolerance = a/n/1000
-    if mesh_procedure == :q4_t3
+    if mesh_procedure == :q4
         fens, fes = Q4circlen(a, n);
-        fens, fes = Q4toT3(fens, fes)
-    elseif mesh_procedure == :t3_nice
-        fens, fes = T3circlen(a, n);
-    elseif mesh_procedure == :t3_poor
-        fens, fes = T3circleseg(pi/2, a, n, n);
     else
         @error "Unknown mesh procedure"
     end
@@ -116,7 +111,7 @@ function test_convergence()
     @info "Simply supported square plate with uniform load,"
     @info "thickness/length = $t_radius_ratio "
     for n in [2, 4, 8, 16, 32, 64]
-        _execute(:t3_poor, n, t_radius_ratio, false)
+        _execute(:q4, n, t_radius_ratio, false)
     end
     return true
 end
