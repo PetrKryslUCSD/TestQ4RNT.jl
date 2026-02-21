@@ -4,7 +4,7 @@
 *.h5mesh
 *.vtk
 *.vtu
-*.pdf
+# *.pdf
 *.jls
 *.jld
 *.png
