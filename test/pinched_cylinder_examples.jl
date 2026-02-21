@@ -50,7 +50,7 @@ function _execute(n = 2, visualize = true)
     sfes = FESetShellQ4()
     accepttodelegate(fes, sfes)
     femm = formul.make(IntegDomain(fes, 
-        CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), mater)
+        GaussRule(2, 2), thickness), mater)
     # femm.drilling_stiffness_scale = 0.1
     associategeometry! = formul.associategeometry!
     stiffness = formul.stiffness

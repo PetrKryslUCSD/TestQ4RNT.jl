@@ -61,7 +61,7 @@ function _execute_full(tL_ratio = 1/100, g = 80*0.1^0, analyt_sol=-9.3355e-5, n 
     
     sfes = FESetShellQ4()
     accepttodelegate(fes, sfes)
-    femm = formul.make(IntegDomain(fes, CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), mater)
+    femm = formul.make(IntegDomain(fes, GaussRule(2, 2), thickness), mater)
     # femm.drilling_stiffness_scale = 0.1
     # femm.mult_el_size = 0.2
     stiffness = formul.stiffness
@@ -147,7 +147,7 @@ function _execute_half(tL_ratio = 1/100, g = 80*0.1^0, analyt_sol=-9.3355e-5, n 
     
     sfes = FESetShellQ4()
     accepttodelegate(fes, sfes)
-    femm = formul.make(IntegDomain(fes, CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), mater)
+    femm = formul.make(IntegDomain(fes, GaussRule(2, 2), thickness), mater)
     # femm.drilling_stiffness_scale = 0.1
     # femm.mult_el_size = 0.2
     stiffness = formul.stiffness

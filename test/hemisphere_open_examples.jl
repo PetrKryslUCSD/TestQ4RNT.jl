@@ -84,10 +84,10 @@ function _execute(n = 8, visualize = true, exact_normals = false, drilling_stiff
     accepttodelegate(fes, sfes)
     if exact_normals
         femm = formul.make(IntegDomain(fes, 
-            CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), ocsys, mater)
+            GaussRule(2, 2), thickness), ocsys, mater)
     else
         femm = formul.make(IntegDomain(fes, 
-            CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), mater)
+            GaussRule(2, 2), thickness), mater)
     end
     # femm.drilling_stiffness_scale = 0.1 * drilling_stiffness_multiplier
     stiffness = formul.stiffness

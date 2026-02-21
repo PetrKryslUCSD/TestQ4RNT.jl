@@ -26,7 +26,6 @@ using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
 using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
 using FinEtoolsFlexStructures.FEMMShellQ4RNTModule: num_normals
-# using TestQ4RNT.FEMMShellT3DSGMTModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 
@@ -42,7 +41,6 @@ function _execute(input = "raasch_s4_1x9.inp", drilling_stiffness_scale = 1.0, v
     # bench_sol = 4.82482; # Ko et al, Performance ...
     R = 46.0;
     formul = FEMMShellQ4RNTModule
-    # formul = FEMMShellT3DSGMTModule
     @show formul
 
     if input == ""
@@ -81,7 +79,7 @@ function _execute(input = "raasch_s4_1x9.inp", drilling_stiffness_scale = 1.0, v
     
     sfes = FESetShellQ4()
     accepttodelegate(fes, sfes)
-    femm = formul.make(IntegDomain(fes, CompositeRule(GaussRule(2, 2), GaussRule(2, 1)), thickness), mater)
+    femm = formul.make(IntegDomain(fes, GaussRule(2, 2), thickness), mater)
     femm.drilling_stiffness_scale = drilling_stiffness_scale
     stiffness = formul.stiffness
     associategeometry! = formul.associategeometry!
@@ -159,7 +157,7 @@ function test_dep_drilling_stiffness_scale()
         results = Float64[]
         # for m in ["1x9", "3x18", "5x36", "10x72", "20x144"]
             # v = _execute("raasch_s4_" * m * ".inp", drilling_stiffness_scale, false)
-        for n in 3:7
+        for n in 1:7
             v = _execute("", drilling_stiffness_scale, false, 9*2^(n-1), 1*2^(n-1))
                     push!(results, v)
         end
@@ -203,7 +201,7 @@ let
     xlabel = "Number of Elements [ND]",
     ylabel = "Normalized Displacement [ND]",
     ymin = 0.95,
-    ymax = 1.0,
+    ymax = 1.1,
     xmode = "log", 
     ymode = "linear",
     yminorgrids = "true",
