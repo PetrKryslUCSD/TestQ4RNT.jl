@@ -77,7 +77,6 @@ end
 function (m::MeshWithBoundaryLayer)(angle, halflength, nL, nW)
     xs = collect(range(0.0, stop=angle, length=nL + 1))
     if m.bl > 0
-        @info "Using boundary layer of thickness $(m.bl)"
         ysb = collect(range(0.0, stop=(1-m.bl) * halflength, length=nW + 1))
         yst = collect(range((1-m.bl) * halflength, stop=halflength, length=nW + 1))
         ys = vcat(ysb[1:end-1], yst)
@@ -200,7 +199,7 @@ function test_convergence(thicknessmult=1 / 100, distortion=0.0, bl=0.0)
     @info "Pressurized hyperboloid of rotation shell, free ends"
     @info "Thickness = $(thicknessmult), distortion = $(distortion), boundary layer = $(bl)"
     results = []
-    ns = [16, 32, 64, 128, 256, ]
+    ns = [16, 32, 64, 128]
     for n in ns
         push!(results, _execute(n, Length / 2 * thicknessmult, distortion, bl))
     end
