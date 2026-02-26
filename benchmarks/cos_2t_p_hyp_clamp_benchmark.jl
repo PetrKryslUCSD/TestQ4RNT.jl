@@ -50,8 +50,7 @@ function computetrac!(forceout::FFltVec, XYZ::FFltMat, tangents::FFltMat, fe_lab
     r[2] = 0.0
     r .= vec(r) / norm(vec(r))
     theta = atan(r[3], r[1])
-    n = cross(tangents[:, 1], tangents[:, 2])
-    n = n / norm(n)
+    n = zeros(3); n[1] = XYZ[1]; n[2] = -XYZ[2]; n[3] = XYZ[3];  n ./= norm(vec(n))
     forceout[1:3] = n * pressure * cos(2 * theta)
     forceout[4:6] .= 0.0
     # @show dot(n, forceout[1:3])
