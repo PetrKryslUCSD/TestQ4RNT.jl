@@ -35,17 +35,28 @@ const pressure = 1.0e6
 const Length = 2.0
 
 # The hyperboloid axis is parallel to Y
+# This function approximates the normal.
+# function hyperbolic!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, fe_label::FInt, qpid::FInt)
+#     n = cross(tangents[:, 1], tangents[:, 2])
+#     n = n / norm(n)
+#     # r = vec(XYZ); r[2] = 0.0
+#     csmatout[:, 3] .= n
+#     csmatout[:, 2] .= (0.0, 1.0, 0.0)
+#     cross3!(view(csmatout, :, 1), view(csmatout, :, 2), view(csmatout, :, 3))
+#     cross3!(view(csmatout, :, 2), view(csmatout, :, 3), view(csmatout, :, 1))
+#     return csmatout
+# end
 
+# The hyperboloid axis is parallel to Y
+# Coordinate system uses the exact normal.
 function hyperbolic!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, fe_label::FInt, qpid::FInt)
-    n = cross(tangents[:, 1], tangents[:, 2])
-    n = n / norm(n)
-    # r = vec(XYZ); r[2] = 0.0
+    n = zeros(3); n[1] = XYZ[1]; n[2] = -XYZ[2]; n[3] = XYZ[3];  n ./= norm(vec(n))
     csmatout[:, 3] .= n
     csmatout[:, 2] .= (0.0, 1.0, 0.0)
     cross3!(view(csmatout, :, 1), view(csmatout, :, 2), view(csmatout, :, 3))
+    cross3!(view(csmatout, :, 2), view(csmatout, :, 3), view(csmatout, :, 1))
     return csmatout
 end
-
 function computetrac!(forceout::FFltVec, XYZ::FFltMat, tangents::FFltMat, fe_label::FInt, qpid::FInt)
     r = vec(XYZ)
     r[2] = 0.0
@@ -257,7 +268,7 @@ let
                     ymode = "log",
                     yminorgrids = "true",
                     grid = "both",
-                    legend_pos = "north west"
+                    legend_pos = "south east"
                 },
                 objects...
             )
