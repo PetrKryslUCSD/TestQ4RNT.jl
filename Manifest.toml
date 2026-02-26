@@ -307,11 +307,11 @@ version = "3.0.6"
 
 [[deps.FinEtoolsFlexStructures]]
 deps = ["Arpack", "DataDrop", "Dierckx", "FinEtools", "FinEtoolsDeforLinear", "LinearAlgebra", "SparseArrays", "SparseMatricesCSR", "Statistics", "SymRCM", "Test"]
-git-tree-sha1 = "08ca22020eef0810932d061b84a1b96ff4680a6a"
+git-tree-sha1 = "448f2e5205ef09b49d49a18e4fa453c6646e8280"
 repo-rev = "main"
 repo-url = "https://github.com/PetrKryslUCSD/FinEtoolsFlexStructures.jl.git"
 uuid = "723391e6-6814-4d1d-921c-018f691214d8"
-version = "3.2.7"
+version = "3.2.9"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -520,9 +520,9 @@ version = "0.12.173"
 
 [[deps.LoweredCodeUtils]]
 deps = ["CodeTracking", "Compiler", "JuliaInterpreter"]
-git-tree-sha1 = "65ae3db6ab0e5b1b5f217043c558d9d1d33cc88d"
+git-tree-sha1 = "5d4278f755440f70648d80cc6225f51e78e94094"
 uuid = "6f1432cf-f94c-5a45-995e-cdbf5db27b0b"
-version = "3.5.0"
+version = "3.5.1"
 
 [[deps.MPICH_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Hwloc_jll", "JLLWrappers", "LazyArtifacts", "Libdl", "MPIPreferences", "TOML"]
@@ -559,9 +559,9 @@ version = "1.11.0"
 
 [[deps.MbedTLS]]
 deps = ["Dates", "MbedTLS_jll", "MozillaCACerts_jll", "NetworkOptions", "Random", "Sockets"]
-git-tree-sha1 = "c067a280ddc25f196b5e7df3877c6b226d390aaf"
+git-tree-sha1 = "8785729fa736197687541f7053f6d8ab7fc44f92"
 uuid = "739be429-bea8-5141-9913-cc70e7f3736d"
-version = "1.1.9"
+version = "1.1.10"
 
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -741,9 +741,9 @@ version = "1.3.3"
 
 [[deps.Preferences]]
 deps = ["TOML"]
-git-tree-sha1 = "522f093a29b31a93e34eaea17ba055d850edea28"
+git-tree-sha1 = "8b770b60760d4451834fe79dd483e318eee709c4"
 uuid = "21216c6a-2e73-6563-6e65-726566657250"
-version = "1.5.1"
+version = "1.5.2"
 
 [[deps.Printf]]
 deps = ["Unicode"]
