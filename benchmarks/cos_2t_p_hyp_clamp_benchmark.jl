@@ -46,14 +46,10 @@ function hyperbolic!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, fe_labe
 end
 
 function computetrac!(forceout::FFltVec, XYZ::FFltMat, tangents::FFltMat, fe_label::FInt, qpid::FInt)
-    r = vec(XYZ)
-    r[2] = 0.0
-    r .= vec(r) / norm(vec(r))
-    theta = atan(r[3], r[1])
+    theta = atan(XYZ[3], XYZ[1])
     n = zeros(3); n[1] = XYZ[1]; n[2] = -XYZ[2]; n[3] = XYZ[3];  n ./= norm(vec(n))
     forceout[1:3] = n * pressure * cos(2 * theta)
     forceout[4:6] .= 0.0
-    # @show dot(n, forceout[1:3])
     return forceout
 end
 

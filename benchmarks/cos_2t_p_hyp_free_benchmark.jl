@@ -59,14 +59,10 @@ function hyperbolic!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, fe_labe
 end
 
 function computetrac!(forceout::FFltVec, XYZ::FFltMat, tangents::FFltMat, fe_label::FInt, qpid::FInt)
-    r = vec(XYZ)
-    r[2] = 0.0
-    r .= vec(r) / norm(vec(r))
-    theta = atan(r[3], r[1])
+    theta = atan(XYZ[3], XYZ[1])
     n = zeros(3); n[1] = XYZ[1]; n[2] = -XYZ[2]; n[3] = XYZ[3];  n ./= norm(vec(n))
     forceout[1:3] = n * pressure * cos(2 * theta)
     forceout[4:6] .= 0.0
-    # @show dot(n, forceout[1:3])
     return forceout
 end
 
@@ -215,7 +211,7 @@ using PGFPlotsX
 let
     tf = cos_2t_p_hyp_free_benchmark.test_convergence
     for bl in [0.0, 1.0]
-        for distortion in [1.0, 0.0]
+        for distortion in [0.0, 1.0]
             ns, results100 = tf(1 / 100, distortion, bl)
             ns, results1000 = tf(1 / 1000, distortion, bl)
             ns, results10000 = tf(1 / 10000, distortion, bl)
