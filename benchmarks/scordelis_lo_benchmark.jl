@@ -109,7 +109,7 @@ function _execute(formul, n = 8, visualize = true)
     solve_blocked!(dchi, K, F)
     U = gathersysvec(dchi, DOF_KIND_ALL)
     result = dchi.values[nl, 3][1]
-    @info "n=$(n): $(result), $(round(result/analyt_sol*100, digits = 4))%"
+    @info "n=$(n): $(round(result, digits = 6)), error $(round(100 - result/analyt_sol*100, digits = 4))%"
 
     # Visualization
     if visualize
