@@ -1,5 +1,5 @@
 """
-Pinched cylinder with diagphram supports and concentrated force
+Pinched cylinder with diagphram supports and concentrated force.
 """
 module pinched_cylinder_benchmark
 
@@ -135,7 +135,8 @@ using .pinched_cylinder_benchmark
 ns, results = pinched_cylinder_benchmark.test_convergence()
 
 analyt_sol = pinched_cylinder_benchmark.analyt_sol
-# These results come from Shin, Lee (2014), Table 3.
+# These results come from Shin, Lee (2014), Table 3. They took as the reference value 1.8541e-5.
+# The analytical solution is usually taken as 1.825e-5.
 
 # Mesh Subdivision
 # 4, 8, 16, 24, 32
