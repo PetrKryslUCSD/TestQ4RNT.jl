@@ -1,6 +1,6 @@
-# TestQ4RNT.jl
+# TestQ4RS.jl
 
-Illustration of the Q4RNT general quadrilateral shell finite element capabilities.
+Illustration of the Q4RS general quadrilateral shell finite element capabilities.
 The paper describing this element is under development as of February 2026.
 
 The tests have been updated here to reflect the best guesses of the true solutions
@@ -13,10 +13,10 @@ folders and a few other details are different on Linux or the Mac.
 
 1. Click on the latest release. Download as .zip file. Unzip the folder
     somewhere. Let us say it is in the `Downloads` folder:
-    `C:\Users\YourUserName\Downloads\TestQ4RNT.jl-0.3.0`. 
+    `C:\Users\YourUserName\Downloads\TestQ4RS.jl-0.3.0`. 
 2. Download `Julia`. Go to [`https://julialang.org/downloads/`](https://julialang.org/downloads/), and choose the portable current stable release. Download to the same folder (`Downloads`).  Extract the zip file (for instance with `7-zip` choose "Extract here"). This will yield `C:\Users\YourUserName\Downloads\julia-1.7.1` (for instance).
-2. Change your working folder to the `C:\Users\YourUserName\Downloads\TestQ4RNT.jl-0.3.0` folder. 
-3. Start a `cmd` window. Make sure that the folder displayed in the command window is  `C:\Users\YourUserName\Downloads\TestQ4RNT.jl-0.3.0`.
+2. Change your working folder to the `C:\Users\YourUserName\Downloads\TestQ4RS.jl-0.3.0` folder. 
+3. Start a `cmd` window. Make sure that the folder displayed in the command window is  `C:\Users\YourUserName\Downloads\TestQ4RS.jl-0.3.0`.
 4. Start `julia` in a `cmd` window by running the command `..\julia-1.7.1\bin\julia.exe`. 
 5. When you get the Julia prompt, `julia>`, run the following commands (copy and paste into the command window)
 ```
@@ -29,8 +29,8 @@ Have a look at the Results section below.
 
 ## Quick instructions for Julia users
 
-Assuming the `TestQ4RNT.jl` package was cloned from Github, change your working directory
-into the `TestQ4RNT.jl` folder, start `julia`, and then run
+Assuming the `TestQ4RS.jl` package was cloned from Github, change your working directory
+into the `TestQ4RS.jl` folder, start `julia`, and then run
 ```
 include("top.jl")
 ```
