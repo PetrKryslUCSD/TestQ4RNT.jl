@@ -47,7 +47,7 @@ params_thinner_dir_3 = (t =  0.0032, force = 1.0e-6, dir = 3, );
 params_thinner_dir_2 = (t =  0.0032, force = 1.0e-6, dir = 2, ); 
 
 
-function _execute(t = 0.32, force = 1.0, dir = 3, nL = 24, nW = 2, visualize = true)
+function _execute(t = 0.32, force = 1.0, dir = 3, nL = 24, nW = 2, bench_sol = 0.0, visualize = false)
     E = 0.29e8;
     nu = 0.22;
     W = 1.1;
@@ -104,10 +104,11 @@ function _execute(t = 0.32, force = 1.0, dir = 3, nL = 24, nW = 2, visualize = t
     solve_blocked!(dchi, K, F)
     nl = selectnode(fens; box = Float64[L L 0 0 0 0], inflate = tolerance)
     result = dchi.values[nl, dir][1]
-    @info "nL=$(nL), nW=$(nW): $(result)"
+    @info "nL=$(nL), nW=$(nW): $(result * 1000), err $(100 - result/bench_sol*100)%"
     
     # Visualization
     if visualize
+        U = gathersysvec(dchi, DOF_KIND_ALL)
         vtkwrite("twisted-geometry.vtu", fens, fes)
         scattersysvec!(dchi, (L/4)/dchi.values[nl, dir][1].*U)
         update_rotation_field!(Rfield0, dchi)
@@ -124,33 +125,37 @@ end
 function test_convergence()
     println("--------------------------------------------------------------------------------")
     @info "Twisted Beam."
-    ns = [2, 4, 8, 16, 32, 64, ]
+    ns = [4, 8, 16, 32, ]
     all_results = []
     @info "Case: thicker, y-direction"
+    bench_sol = 0.00175686
     results = []
     for n in ns
-        v = _execute(params_thicker_dir_2..., 12*n, n, false)
+        v = _execute(params_thicker_dir_2..., 12*n, n, bench_sol)
         push!(results, v)
     end
     push!(all_results, results)
     @info "Case: thicker, z-direction"
+    bench_sol = 0.00542727
     results = []
     for n in ns
-        v = _execute(params_thicker_dir_3..., 12*n, n, false)
+        v = _execute(params_thicker_dir_3..., 12*n, n, bench_sol)
         push!(results, v)
     end
     push!(all_results, results)
     @info "Case: thin, y-direction"
+    bench_sol = 0.00129514
     results = []
     for n in ns
-        v = _execute(params_thinner_dir_2..., 12*n, n, false)
+        v = _execute(params_thinner_dir_2..., 12*n, n, bench_sol)
         push!(results, v)
     end
     push!(all_results, results)
     @info "Case: thin, z-direction"
+    bench_sol = 0.00524993
     results = []
     for n in ns
-        v = _execute(params_thinner_dir_3..., 12*n, n, false)
+        v = _execute(params_thinner_dir_3..., 12*n, n, bench_sol)
         push!(results, v)
     end
     push!(all_results, results)
