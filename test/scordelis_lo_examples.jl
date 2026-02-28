@@ -24,7 +24,7 @@ using FinEtools.FTypesModule: FInt, FFlt, FFltMat, FFltVec
 using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
@@ -160,7 +160,7 @@ function _execute(formul, n = 8, visualize = true)
 end
 
 function test_convergence(ns = [4, 6, 8, 16, 32], visualize = false)
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
     @info "Scordelis-Lo shell"
     results = []
     for n in ns
@@ -334,7 +334,7 @@ q2 = 0.301976
 q3 = 0.302021
 @show qtrue = (q2^2 - q1 * q3) / (2 * q2 - q1 - q3) # 0.302036
 
-# Q4RNT, mesh with 128, 256, 512 elements per side
+# Q4RS, mesh with 128, 256, 512 elements per side
 # julia> ns, results = scordelis_lo_examples.test_convergence([16, 32, 64].*8)
 # [ Info: Scordelis-Lo shell
 # [ Info: Solution: -3.01162e-01, 9.95907e+01%

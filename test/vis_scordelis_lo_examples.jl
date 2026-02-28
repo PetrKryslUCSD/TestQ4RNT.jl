@@ -24,7 +24,7 @@ using FinEtools.FTypesModule: FInt, FFlt, FFltMat, FFltVec
 using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
@@ -48,7 +48,7 @@ cylindrical!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, feid::FInt, qpi
 end
 
 function _execute_dsg_model(n = 8, visualize = true)
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
     tolerance = R/n/10
     # fens, fes = Q4blockrand(40/360*2*pi,L/2,n,n);
     fens, fes = Q4block(40/360*2*pi,L/2,n,n);
@@ -178,5 +178,5 @@ end # module
 using .vis_scordelis_lo_examples
 
 # Visualized internal resultants
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 ns, results = vis_scordelis_lo_examples.test_convergence([2*16,], true)

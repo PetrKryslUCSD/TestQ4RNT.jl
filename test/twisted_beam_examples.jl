@@ -35,7 +35,7 @@ using FinEtools
 using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
 
@@ -51,7 +51,7 @@ function _execute(t = 0.32, force = 1.0, dir = 3, nL = 24, nW = 2, visualize = t
     nu = 0.22;
     W = 1.1;
     L = 12.0;
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
     
     tolerance = W/nW/100
     fens, fes = Q4block(L,W,nL,nW);

@@ -24,7 +24,7 @@ using FinEtools.FTypesModule: FInt, FFlt, FFltMat, FFltVec
 using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
@@ -156,7 +156,7 @@ function _execute(formul, n = 8, visualize = true)
 end
 
 function test_convergence(ns = [4, 6, 8, 16, 32], visualize = false)
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
     @info "Scordelis-Lo shell benchmark"
     results = []
     for n in ns

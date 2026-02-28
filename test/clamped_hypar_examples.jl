@@ -30,7 +30,7 @@ using FinEtools.FTypesModule: FInt, FFlt, FFltMat, FFltVec
 using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
@@ -45,7 +45,7 @@ function _execute_full(tL_ratio = 1/100, g = 80*0.1^0, analyt_sol=-9.3355e-5, n 
     thickness = tL_ratio * L
     # Bathe, Iosilevich, and Chapelle (2000) with a refined mesh of
     # high-order element MITC16
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
 
     @info "Mesh: $n elements per side"
 
@@ -131,7 +131,7 @@ function _execute_half(tL_ratio = 1/100, g = 80*0.1^0, analyt_sol=-9.3355e-5, n 
     thickness = tL_ratio * L
     # Bathe, Iosilevich, and Chapelle (2000) with a refined mesh of
     # high-order element MITC16
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
 
     @info "Mesh: $n elements per side"
 

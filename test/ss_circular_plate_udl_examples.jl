@@ -8,7 +8,7 @@ using FinEtools.FTypesModule: FInt, FFlt, FFltMat, FFltVec
 using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 
@@ -24,7 +24,7 @@ function _execute(mesh_procedure = :q4, n = 2, t_radius_ratio = 0.01, visualize 
     # analytical solution for the vertical deflection under the load
     # Includes the effect of shear deformation.
     analyt_sol = -q*a^4/64/D*((5+nu)/(1+nu)+4/(1-nu)*thickness^2/a^2);
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
 
     tolerance = a/n/1000
     if mesh_procedure == :q4

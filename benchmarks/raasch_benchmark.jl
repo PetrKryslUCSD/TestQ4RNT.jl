@@ -24,8 +24,8 @@ using FinEtools.FTypesModule: FInt, FFlt, FFltMat, FFltVec
 using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule: num_normals
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule: num_normals
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 
@@ -40,7 +40,7 @@ function _execute(input = "raasch_s4_1x9.inp", drilling_stiffness_scale = 1.0, v
     bench_sol = 5.022012648671993; # 20-node hex results
     # bench_sol = 4.82482; # Ko et al, Performance ...
     R = 46.0;
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
     
     if input == ""
         fens, fes = Q4block(210.0, 20.0, nL, nW)
@@ -140,8 +140,9 @@ function test_convergence()
 
     # for m in ["1x9", "3x18", "5x36", "10x72", "20x144"]
         # _execute("raasch_s4_" * m * ".inp", 1.0, false)
-    for n in 1:7
-        _execute("", 1.0, false, 9*2^(n-1), 1*2^(n-1))
+    for n in [2, 4, 8, 16, 32]
+        # _execute("", 1.0, false, 9*2^(n-1), 1*2^(n-1))
+        _execute("", 1.0, false, 6*n, n)
     end
     return true
 end

@@ -23,7 +23,7 @@ using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtools.MeshModificationModule: distortblock
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
@@ -178,16 +178,16 @@ end
 end # module
 
 using .cos_2t_press_hyperboloid_free_examples
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using PGFPlotsX
 
 let
 
     for distortion in [2.0, 0.0]
-        ns, results100 = cos_2t_press_hyperboloid_free_examples.test_convergence(FEMMShellQ4RNTModule, 1/100, distortion)
-        ns, results1000 = cos_2t_press_hyperboloid_free_examples.test_convergence(FEMMShellQ4RNTModule, 1/1000, distortion)
-        ns, results10000 = cos_2t_press_hyperboloid_free_examples.test_convergence(FEMMShellQ4RNTModule, 1/10000, distortion)
-        ns, results100000 = cos_2t_press_hyperboloid_free_examples.test_convergence(FEMMShellQ4RNTModule, 1/100000, distortion)
+        ns, results100 = cos_2t_press_hyperboloid_free_examples.test_convergence(FEMMShellQ4RSModule, 1/100, distortion)
+        ns, results1000 = cos_2t_press_hyperboloid_free_examples.test_convergence(FEMMShellQ4RSModule, 1/1000, distortion)
+        ns, results10000 = cos_2t_press_hyperboloid_free_examples.test_convergence(FEMMShellQ4RSModule, 1/10000, distortion)
+        ns, results100000 = cos_2t_press_hyperboloid_free_examples.test_convergence(FEMMShellQ4RSModule, 1/100000, distortion)
 
         @show q1, q2, q3 = results100
         @show qtrue = (q2^2 - q1 * q3) / (2*q2 - q1 - q3)

@@ -24,8 +24,8 @@ using FinEtools.FTypesModule: FInt, FFlt, FFltMat, FFltVec
 using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule: num_normals
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule: num_normals
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 
@@ -40,7 +40,7 @@ function _execute(input = "raasch_s4_1x9.inp", drilling_stiffness_scale = 1.0, v
     bench_sol = 5.022012648671993; # 20-node hex results
     # bench_sol = 4.82482; # Ko et al, Performance ...
     R = 46.0;
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
     @show formul
 
     if input == ""

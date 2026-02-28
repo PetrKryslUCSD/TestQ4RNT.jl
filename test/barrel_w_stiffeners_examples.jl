@@ -19,7 +19,7 @@ using Arpack
 using FinEtools
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 using DataDrop: with_extension
@@ -128,7 +128,7 @@ end
 
 function test_convergence()
     input = "barrel_w_stiffeners-q4-mesh.h5mesh"
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
     @info "Barrel With Stiffeners, free vibration, formulation=$(formul)"
     _execute_model(formul, input, true)
     return true

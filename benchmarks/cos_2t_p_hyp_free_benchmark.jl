@@ -23,7 +23,7 @@ using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtools.MeshModificationModule: distortblock
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
@@ -84,7 +84,7 @@ function (m::MeshWithBoundaryLayer)(angle, halflength, nL, nW)
 end
 
 function _execute(n=8, thickness=Length / 2 / 100, distortion=0.0, bl=0.0, visualize=false)
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
     tolerance = Length / n / 100
     withboundarylayer = MeshWithBoundaryLayer(6 * sqrt(thickness) / Length * bl)
     fens, fes = distortblock((angle, halflength, nL, nW) -> withboundarylayer(angle, halflength, nL, nW), 90 / 360 * 2 * pi, Length / 2, n, n, 2 * distortion / n, 2 * distortion / n)
@@ -206,7 +206,7 @@ end
 end # module
 
 using .cos_2t_p_hyp_free_benchmark
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using PGFPlotsX
 
 let

@@ -37,7 +37,7 @@ using FinEtools.FTypesModule: FInt, FFlt, FFltMat, FFltVec
 using FinEtools.AlgoBaseModule: solve_blocked!
 using FinEtoolsDeforLinear
 using FinEtoolsFlexStructures.FESetShellQ4Module: FESetShellQ4
-using FinEtoolsFlexStructures.FEMMShellQ4RNTModule
+using FinEtoolsFlexStructures.FEMMShellQ4RSModule
 using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_field!
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
@@ -61,7 +61,7 @@ function _execute(n = 8, visualize = true, exact_normals = false, drilling_stiff
     # analytical solution for the vertical deflection under the load
     analyt_sol = 0.093;
     R = 10.0;
-    formul = FEMMShellQ4RNTModule
+    formul = FEMMShellQ4RSModule
 
     tolerance = R/n/100
     fens, fes = Q4block(90.0, 70.0, n, n)

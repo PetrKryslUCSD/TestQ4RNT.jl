@@ -18,7 +18,7 @@ Axial stress at X = 2.5 from fixed end (point A) at the midsurface is -108 MPa.
 
 A better solution is now available (https://link.springer.com/article/10.1007/s11831-022-09798-5): -111.215 MPa.
 """
-module LE5_Z_cantilever_examples
+module LE5_Z_cantilever_benchmark
 
 using LinearAlgebra
 using FinEtools
@@ -40,6 +40,7 @@ function zcant!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, fe_label::FI
     return csmatout
 end
 
+const refPointAstressX = -111.215
 
 function _executemodel(formul, input = "nle5-q4.inp", nrefs = 0, visualize = true)
     E = 210e9;
@@ -48,7 +49,7 @@ function _executemodel(formul, input = "nle5-q4.inp", nrefs = 0, visualize = tru
     thickness = 0.1
 
     tolerance = thickness/1000
-    output = import_ABAQUS(joinpath(dirname(@__FILE__()), input))
+    output = import_ABAQUS(joinpath(dirname(@__FILE__()), "../data/" * input))
     fens = output["fens"]
     fes = output["fesets"][1]
 
@@ -63,9 +64,6 @@ function _executemodel(formul, input = "nle5-q4.inp", nrefs = 0, visualize = tru
     mater = MatDeforElastIso(DeforModelRed3D, E, nu)
     ocsys = CSys(3, 3, zcant!)
     
-    # Report
-    @info "Mesh: $input, nrefs = $nrefs"
-
     sfes = FESetShellQ4()
     accepttodelegate(fes, sfes)
     femm = formul.make(IntegDomain(fes, GaussRule(2, 2), thickness), mater)
@@ -116,8 +114,7 @@ function _executemodel(formul, input = "nle5-q4.inp", nrefs = 0, visualize = tru
     # Solve
     solve_blocked!(dchi, K, F)
     targetu =  minimum(dchi.values[:, 3]), maximum(dchi.values[:, 3])
-    @info "Target: $(round.(targetu, digits=8))"
-
+    
     # Generate a graphical display of displacements and rotations
     scalars = []
     for nc in 1:6
@@ -155,6 +152,8 @@ function _executemodel(formul, input = "nle5-q4.inp", nrefs = 0, visualize = tru
     end
     vtkwrite("z_cant-$input-$nrefs-q.vtu", fens, fes; scalars = scalars, vectors = [("u", dchi.values[:, 1:3])])
 
+    @info "nrefs = $nrefs: $(round(pointAstresses[1]/1e6, digits=6)) MPa, err $(round(100 - pointAstresses[1]/1e6/refPointAstressX*100, digits = 4))%"
+
     # Visualization
     if visualize
         scattersysvec!(dchi, (L/8)/maximum(abs.(U)).*U, DOF_KIND_ALL)
@@ -172,7 +171,7 @@ function test_convergence()
     formul = FEMMShellQ4RSModule
     @info "LE5 Z-cantilever,\n   formulation=$(formul)"
     pointAstressX = Float64[]
-    for n in [0, 1, 2, 3, 4, 5, 6, 7]
+    for n in [0, 1, 2, 3, 4, ]
         s = _executemodel(formul, "nle5-q4.inp", n, false)
         push!(pointAstressX, s[1])
     end
@@ -183,12 +182,14 @@ end # module
 
 using PGFPlotsX
 
-using .LE5_Z_cantilever_examples
-m = LE5_Z_cantilever_examples
+using .LE5_Z_cantilever_benchmark
+m = LE5_Z_cantilever_benchmark
+
+refPointAstressX = m.refPointAstressX
 
 let
     @show pointAstressX = m.test_convergence()
-    ns = 2 .^  [0, 1, 2, 3, 4, 5, 6, 7]
+    ns = 2 .^  [0, 1, 2, 3, 4, ]
 
     objects = []
 
@@ -199,7 +200,7 @@ let
     style = "solid",
     mark = "diamond"
     },
-    Coordinates([v for v in  zip(ns, (-111.215 .- pointAstressX ./ 1.0e6) ./ 111.215)])
+    Coordinates([v for v in  zip(ns, (refPointAstressX .- pointAstressX ./ 1.0e6) ./ 111.215)])
     )
     push!(objects, p)
 
