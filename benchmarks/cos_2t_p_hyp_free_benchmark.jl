@@ -74,8 +74,9 @@ end
 function (m::MeshWithBoundaryLayer)(angle, halflength, nL, nW)
     xs = collect(range(0.0, stop=angle, length=nL + 1))
     if m.bl > 0
-        ysb = collect(range(0.0, stop=(1-m.bl) * halflength, length=nW + 1))
-        yst = collect(range((1-m.bl) * halflength, stop=halflength, length=nW + 1))
+        nWbl = Int(round(nW / 10))
+        ysb = collect(range(0.0, stop=(1-m.bl) * halflength, length=nW + 1 - nWbl))
+        yst = collect(range((1-m.bl) * halflength, stop=halflength, length=nWbl))
         ys = vcat(ysb[1:end-1], yst)
     else
         ys = collect(range(0.0, stop=halflength, length=nW + 1))
@@ -161,21 +162,21 @@ function _execute(n=8, thickness=Length / 2 / 100, distortion=0.0, bl=0.0, visua
         # fld = elemfieldfromintegpoints(femm, geom0, dchi, :moment, nc)
         push!(scalars, ("m$nc", fld.values))
     end
-    vtkwrite("cos_2t_p_hyp_free-$(n)-h=$(thickness)-d=$(distortion)-bl=$(bl)-m.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
+    vtkwrite("cos_2t_p_hyp_free-$(n)_h=$(thickness)_d=$(distortion)_bl=$(bl)_m.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
     scalars = []
     for nc in 1:3
         fld = fieldfromintegpoints(femm, geom0, dchi, :membrane, nc, outputcsys=ocsys)
         # fld = elemfieldfromintegpoints(femm, geom0, dchi, :moment, nc)
         push!(scalars, ("n$nc", fld.values))
     end
-    vtkwrite("cos_2t_p_hyp_free-$(n)-h=$(thickness)-d=$(distortion)-bl=$(bl)-n.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
+    vtkwrite("cos_2t_p_hyp_free-$(n)_h=$(thickness)_d=$(distortion)_bl=$(bl)_n.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
     scalars = []
     for nc in 1:2
         fld = fieldfromintegpoints(femm, geom0, dchi, :shear, nc, outputcsys=ocsys)
         # fld = elemfieldfromintegpoints(femm, geom0, dchi, :moment, nc)
         push!(scalars, ("q$nc", fld.values))
     end
-    vtkwrite("cos_2t_p_hyp_free-$(n)-h=$(thickness)-d=$(distortion)-bl=$(bl)-q.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
+    vtkwrite("cos_2t_p_hyp_free-$(n)_h=$(thickness)_d=$(distortion)_bl=$(bl)_q.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
 
     # Visualization
     if visualize
@@ -211,7 +212,7 @@ using PGFPlotsX
 
 let
     tf = cos_2t_p_hyp_free_benchmark.test_convergence
-    for bl in [0.0, 1.0]
+    for bl in [1.0, 0.0]
         for distortion in [0.0, 1.0]
             ns, results100 = tf(1 / 100, distortion, bl)
             ns, results1000 = tf(1 / 1000, distortion, bl)
@@ -264,7 +265,7 @@ let
                     ymode = "log",
                     yminorgrids = "true",
                     grid = "both",
-                    legend_pos = "south east"
+                    legend_pos = "north west"
                 },
                 objects...
             )
