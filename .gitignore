@@ -4,13 +4,13 @@
 *.h5mesh
 *.vtk
 *.vtu
-# *.pdf
+*.pdf
 *.jls
 *.jld
 *.png
 *.log
 *.json
-*.sublime-workspace
+*.code-workspace
 docs/build/
 .vscode/
 *.bak
