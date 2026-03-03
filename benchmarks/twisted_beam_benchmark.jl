@@ -122,16 +122,15 @@ function _execute(t = 0.32, force = 1.0, dir = 3, nL = 24, nW = 2, bench_sol = 0
     return result
 end
 
-function test_convergence()
+function test_convergence(ns = [2, 4, 8, 16, 32, ])
     println("--------------------------------------------------------------------------------")
     @info "Twisted Beam."
-    ns = [4, 8, 16, 32, ]
     all_results = []
     @info "Case: thicker, y-direction"
     bench_sol = 0.00175686
     results = []
     for n in ns
-        v = _execute(params_thicker_dir_2..., 12*n, n, bench_sol)
+        v = _execute(params_thicker_dir_2..., 6*n, n, bench_sol)
         push!(results, v)
     end
     push!(all_results, results)
@@ -139,7 +138,7 @@ function test_convergence()
     bench_sol = 0.00542727
     results = []
     for n in ns
-        v = _execute(params_thicker_dir_3..., 12*n, n, bench_sol)
+        v = _execute(params_thicker_dir_3..., 6*n, n, bench_sol)
         push!(results, v)
     end
     push!(all_results, results)
@@ -147,7 +146,7 @@ function test_convergence()
     bench_sol = 0.00129514
     results = []
     for n in ns
-        v = _execute(params_thinner_dir_2..., 12*n, n, bench_sol)
+        v = _execute(params_thinner_dir_2..., 6*n, n, bench_sol)
         push!(results, v)
     end
     push!(all_results, results)
@@ -155,7 +154,7 @@ function test_convergence()
     bench_sol = 0.00524993
     results = []
     for n in ns
-        v = _execute(params_thinner_dir_3..., 12*n, n, bench_sol)
+        v = _execute(params_thinner_dir_3..., 6*n, n, bench_sol)
         push!(results, v)
     end
     push!(all_results, results)
