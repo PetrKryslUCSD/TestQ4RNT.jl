@@ -67,16 +67,24 @@ function computetrac!(forceout::FFltVec, XYZ::FFltMat, tangents::FFltMat, fe_lab
     return forceout
 end
 
+__FRACT_ELEM_IN_UNIT_BL = 1.0 / 20
+
 struct MeshWithBoundaryLayer
+    thickness::Float64
     bl::Float64
 end
 
 function (m::MeshWithBoundaryLayer)(angle, halflength, nL, nW)
+    Lbl = m.bl * sqrt(m.thickness)
+    L1 = halflength - Lbl
+    nWbl = Int(round(nW * __FRACT_ELEM_IN_UNIT_BL * m.bl))
+    n1 = nW - nWbl
+    h1 = L1 / n1
+    hbl = Lbl / nWbl
     xs = collect(range(0.0, stop=angle, length=nL + 1))
-    if m.bl > 0
-        nWbl = Int(round(nW / 10))
-        ysb = collect(range(0.0, stop=(1-m.bl) * halflength, length=nW + 1 - nWbl))
-        yst = collect(range((1-m.bl) * halflength, stop=halflength, length=nWbl))
+    if m.bl > 0 && (hbl < h1)        
+        ysb = collect(range(0.0, stop=L1, length=n1 + 1))
+        yst = collect(range(L1, stop=halflength, length=nWbl + 1))
         ys = vcat(ysb[1:end-1], yst)
     else
         ys = collect(range(0.0, stop=halflength, length=nW + 1))
@@ -87,7 +95,7 @@ end
 function _execute(n=8, thickness=Length / 2 / 100, distortion=0.0, bl=0.0, visualize=false)
     formul = FEMMShellQ4RSModule
     tolerance = Length / n / 100
-    withboundarylayer = MeshWithBoundaryLayer(6 * sqrt(thickness) / Length * bl)
+    withboundarylayer = MeshWithBoundaryLayer(thickness, bl)
     fens, fes = distortblock((angle, halflength, nL, nW) -> withboundarylayer(angle, halflength, nL, nW), 90 / 360 * 2 * pi, Length / 2, n, n, 2 * distortion / n, 2 * distortion / n)
     fens.xyz = xyz3(fens)
     for i in 1:count(fens)
@@ -212,7 +220,7 @@ using PGFPlotsX
 
 let
     tf = cos_2t_p_hyp_free_benchmark.test_convergence
-    for bl in [1.0, 0.0]
+    for bl in [6.0, 0.0]
         for distortion in [0.0, 1.0]
             ns, results100 = tf(1 / 100, distortion, bl)
             ns, results1000 = tf(1 / 1000, distortion, bl)
