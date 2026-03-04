@@ -82,7 +82,7 @@ function (m::MeshWithBoundaryLayer)(angle, halflength, nL, nW)
     h1 = L1 / n1
     hbl = Lbl / nWbl
     xs = collect(range(0.0, stop=angle, length=nL + 1))
-    if m.bl > 0 && (hbl < h1)        
+    if m.bl > 0 && (hbl < h1)
         ysb = collect(range(0.0, stop=L1, length=n1 + 1))
         yst = collect(range(L1, stop=halflength, length=nWbl + 1))
         ys = vcat(ysb[1:end-1], yst)
@@ -92,11 +92,16 @@ function (m::MeshWithBoundaryLayer)(angle, halflength, nL, nW)
     return Q4blockx(xs, ys)
 end
 
-function _execute(n=8, thickness=Length / 2 / 100, distortion=0.0, bl=0.0, visualize=false)
+function _execute(n=8, thickness=Length / 2 / 100, distort=false, bl=0.0, visualize=false)
     formul = FEMMShellQ4RSModule
     tolerance = Length / n / 100
     withboundarylayer = MeshWithBoundaryLayer(thickness, bl)
-    fens, fes = distortblock((angle, halflength, nL, nW) -> withboundarylayer(angle, halflength, nL, nW), 90 / 360 * 2 * pi, Length / 2, n, n, 2 * distortion / n, 2 * distortion / n)
+    if distort
+        fens, fes = distortblock((angle, halflength, nL, nW) -> withboundarylayer(angle, halflength, nL, nW),
+            90 / 360 * 2 * pi, Length / 2, n, n)
+    else
+        fens, fes = withboundarylayer(90 / 360 * 2 * pi, Length / 2, n, n)
+    end
     fens.xyz = xyz3(fens)
     for i in 1:count(fens)
         a = fens.xyz[i, 1]
@@ -170,21 +175,21 @@ function _execute(n=8, thickness=Length / 2 / 100, distortion=0.0, bl=0.0, visua
         # fld = elemfieldfromintegpoints(femm, geom0, dchi, :moment, nc)
         push!(scalars, ("m$nc", fld.values))
     end
-    vtkwrite("cos_2t_p_hyp_free-$(n)_h=$(thickness)_d=$(distortion)_bl=$(bl)_m.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
+    vtkwrite("cos_2t_p_hyp_free-$(n)_h=$(thickness)_d=$(distort)_bl=$(bl)_m.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
     scalars = []
     for nc in 1:3
         fld = fieldfromintegpoints(femm, geom0, dchi, :membrane, nc, outputcsys=ocsys)
         # fld = elemfieldfromintegpoints(femm, geom0, dchi, :moment, nc)
         push!(scalars, ("n$nc", fld.values))
     end
-    vtkwrite("cos_2t_p_hyp_free-$(n)_h=$(thickness)_d=$(distortion)_bl=$(bl)_n.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
+    vtkwrite("cos_2t_p_hyp_free-$(n)_h=$(thickness)_d=$(distort)_bl=$(bl)_n.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
     scalars = []
     for nc in 1:2
         fld = fieldfromintegpoints(femm, geom0, dchi, :shear, nc, outputcsys=ocsys)
         # fld = elemfieldfromintegpoints(femm, geom0, dchi, :moment, nc)
         push!(scalars, ("q$nc", fld.values))
     end
-    vtkwrite("cos_2t_p_hyp_free-$(n)_h=$(thickness)_d=$(distortion)_bl=$(bl)_q.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
+    vtkwrite("cos_2t_p_hyp_free-$(n)_h=$(thickness)_d=$(distort)_bl=$(bl)_q.vtu", fens, fes; scalars=scalars, vectors=[("u", dchi.values[:, 1:3])])
 
     # Visualization
     if visualize
@@ -201,13 +206,13 @@ function _execute(n=8, thickness=Length / 2 / 100, distortion=0.0, bl=0.0, visua
     return strainenergy
 end
 
-function test_convergence(thicknessmult=1 / 100, distortion=0.0, bl=0.0)
+function test_convergence(thicknessmult=1 / 100, distort=false, bl=0.0)
     @info "Pressurized hyperboloid of rotation shell, free ends"
-    @info "Thickness = $(thicknessmult), distortion = $(distortion), boundary layer = $(bl)"
+    @info "Thickness = $(thicknessmult), distort = $(distort), boundary layer = $(bl)"
     results = []
     ns = [16, 32, 64, 128]
     for n in ns
-        push!(results, _execute(n, Length / 2 * thicknessmult, distortion, bl))
+        push!(results, _execute(n, Length / 2 * thicknessmult, distort, bl))
     end
     return ns, results
 end
@@ -220,67 +225,64 @@ using PGFPlotsX
 
 let
     tf = cos_2t_p_hyp_free_benchmark.test_convergence
-    for bl in [6.0, 0.0]
-        for distortion in [0.0, 1.0]
-            ns, results100 = tf(1 / 100, distortion, bl)
-            ns, results1000 = tf(1 / 1000, distortion, bl)
-            ns, results10000 = tf(1 / 10000, distortion, bl)
-            ns, results100000 = tf(1 / 100000, distortion, bl)
+    for (bl, distort) in zip([6.0, 0.0, 0.0], [false, false, true])
+        ns, results100 = tf(1 / 100, distort, bl)
+        ns, results1000 = tf(1 / 1000, distort, bl)
+        ns, results10000 = tf(1 / 10000, distort, bl)
+        ns, results100000 = tf(1 / 100000, distort, bl)
 
-            errors100 = abs.(diff(results100) / results100[end])
-            errors1000 = abs.(diff(results1000) / results1000[end])
-            errors10000 = abs.(diff(results10000) / results10000[end])
-            errors100000 = abs.(diff(results100000) / results100000[end])
+        errors100 = abs.(diff(results100) / results100[end])
+        errors1000 = abs.(diff(results1000) / results1000[end])
+        errors10000 = abs.(diff(results10000) / results10000[end])
+        errors100000 = abs.(diff(results100000) / results100000[end])
 
 
-            objects = []
+        objects = []
 
-            all_results = [("t=L/100", errors100, "*"), ("t=L/1000", errors1000, "x"), ("t=L/10000", errors10000, "triangle"), ("t=L/100000", errors100000, "diamond"),]
+        all_results = [("t=L/100", errors100, "*"), ("t=L/1000", errors1000, "x"), ("t=L/10000", errors10000, "triangle"), ("t=L/100000", errors100000, "diamond"),]
 
-            for r in all_results
-                @pgf p = PGFPlotsX.Plot(
-                    {
-                        color = "black",
-                        line_width = 0.7,
-                        style = "solid",
-                        mark = "$(r[3])"
-                    },
-                    Coordinates([v for v in zip(1 ./ ns, r[2]) if v[2] !== missing])
-                )
-                push!(objects, p)
-                push!(objects, LegendEntry("$(r[1])"))
-            end
-
+        for r in all_results
             @pgf p = PGFPlotsX.Plot(
                 {
-                    color = "red",
+                    color = "black",
                     line_width = 0.7,
-                    style = "dashed"
+                    style = "solid",
+                    mark = "$(r[3])"
                 },
-                Coordinates([(0.01, 0.0001), (0.1, 0.01)])
+                Coordinates([v for v in zip(1 ./ ns, r[2]) if v[2] !== missing])
             )
             push!(objects, p)
-            push!(objects, LegendEntry("slope=2"))
-
-            @pgf ax = Axis(
-                {
-                    xlabel = "Relative element size [ND]",
-                    ylabel = "Approximate Normalized Error [ND]",
-                    xmin = 0.0005,
-                    # xmax = range[2],
-                    ymin = 0.0001,
-                    xmode = "log",
-                    ymode = "log",
-                    yminorgrids = "true",
-                    grid = "both",
-                    legend_pos = "north west"
-                },
-                objects...
-            )
-
-            display(ax)
-            pgfsave("cos_2t_p_hyp_free_d=$(distortion)_bl=$(bl)-convergence.pdf", ax)
-
+            push!(objects, LegendEntry("$(r[1])"))
         end
+
+        @pgf p = PGFPlotsX.Plot(
+            {
+                color = "red",
+                line_width = 0.7,
+                style = "dashed"
+            },
+            Coordinates([(0.01, 0.0001), (0.1, 0.01)])
+        )
+        push!(objects, p)
+        push!(objects, LegendEntry("slope=2"))
+
+        @pgf ax = Axis(
+            {
+                xlabel = "Relative element size [ND]",
+                ylabel = "Approximate Normalized Error [ND]",
+                xmin = 0.0005,
+                # xmax = range[2],
+                ymin = 0.0001,
+                xmode = "log",
+                ymode = "log",
+                yminorgrids = "true",
+                grid = "both",
+                legend_pos = "north west"
+            },
+            objects...
+        )
+
+        display(ax)
+        pgfsave("cos_2t_p_hyp_free_d=$(distort)_bl=$(bl)-convergence.pdf", ax)
     end
 end
