@@ -32,7 +32,7 @@ using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_m
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
 
 function zcant!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, fe_label::FInt, qpid::FInt)  
-    r = vec(XYZ); 
+    r = vec(deepcopy(XYZ)); 
     cross3!(r, view(tangents, :, 1), view(tangents, :, 2))
     csmatout[:, 3] .= vec(r)/norm(vec(r))
     csmatout[:, 1] .= (1.0, 0.0, 0.0)

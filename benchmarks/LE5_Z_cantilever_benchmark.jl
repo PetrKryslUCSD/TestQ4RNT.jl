@@ -32,7 +32,7 @@ using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_m
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
 
 function zcant!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, fe_label::FInt, qpid::FInt)  
-    r = vec(XYZ); 
+    r = vec(deepcopy(XYZ)); 
     cross3!(r, view(tangents, :, 1), view(tangents, :, 2))
     csmatout[:, 3] .= vec(r)/norm(vec(r))
     csmatout[:, 1] .= (1.0, 0.0, 0.0)
@@ -66,7 +66,7 @@ function _executemodel(formul, input = "nle5-q4.inp", nrefs = 0, visualize = tru
     
     sfes = FESetShellQ4()
     accepttodelegate(fes, sfes)
-    femm = formul.make(IntegDomain(fes, GaussRule(2, 2), thickness), mater)
+    femm = formul.make(IntegDomain(fes, Simpson13Rule(2), thickness), mater)
     stiffness = formul.stiffness
     associategeometry! = formul.associategeometry!
 

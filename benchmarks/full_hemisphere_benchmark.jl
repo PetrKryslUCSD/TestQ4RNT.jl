@@ -45,7 +45,7 @@ using FinEtools.MeshExportModule.VTKWrite: vtkwrite
 using Infiltrator
 
 function spherical!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, feid::FInt, qpid::FInt)  
-    r = vec(XYZ); 
+    r = vec(deepcopy(XYZ)); 
     csmatout[:, 3] .= vec(r)/norm(vec(r))
     csmatout[:, 2] .= (0.0, 0.0, 1.0)
     cross3!(view(csmatout, :, 1), view(csmatout, :, 2), view(csmatout, :, 3))
