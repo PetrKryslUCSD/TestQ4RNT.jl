@@ -6,9 +6,9 @@ project_hash = "a7d803e489fbd120c93e448684a7e233e2f0abf8"
 
 [[deps.Adapt]]
 deps = ["LinearAlgebra", "Requires"]
-git-tree-sha1 = "7e35fca2bdfba44d797c53dfe63a51fabf39bfc0"
+git-tree-sha1 = "35ea197a51ce46fcd01c4a44befce0578a1aaeca"
 uuid = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
-version = "4.4.0"
+version = "4.5.0"
 
     [deps.Adapt.extensions]
     AdaptSparseArraysExt = "SparseArrays"
@@ -289,9 +289,9 @@ version = "1.16.0"
 
 [[deps.FinEtools]]
 deps = ["DataDrop", "DelimitedFiles", "HDF5", "LinearAlgebra", "LoopVectorization", "Printf", "Random", "SparseArrays", "Statistics", "SymRCM", "Test", "Unicode", "WriteVTK"]
-git-tree-sha1 = "0b34b62ee7a67e2a54e3b0069f1bfcd4ff4399ba"
+git-tree-sha1 = "7b0946a85864159336439eab3edd673ae4d60715"
 uuid = "91bb5406-6c9a-523d-811d-0644c4229550"
-version = "8.2.3"
+version = "8.2.4"
 
 [[deps.FinEtoolsAcoustics]]
 deps = ["Arpack", "FinEtools", "LinearAlgebra", "SparseArrays", "Statistics", "Test"]
@@ -307,7 +307,7 @@ version = "3.0.6"
 
 [[deps.FinEtoolsFlexStructures]]
 deps = ["Arpack", "DataDrop", "Dierckx", "FinEtools", "FinEtoolsDeforLinear", "LinearAlgebra", "SparseArrays", "SparseMatricesCSR", "Statistics", "SymRCM", "Test"]
-git-tree-sha1 = "7104343b6864eadfd0885bdd5cc0d6112e8edbce"
+git-tree-sha1 = "118c64c2ad48b7ed643cfd50158b746a68b86987"
 repo-rev = "main"
 repo-url = "https://github.com/PetrKryslUCSD/FinEtoolsFlexStructures.jl.git"
 uuid = "723391e6-6814-4d1d-921c-018f691214d8"
