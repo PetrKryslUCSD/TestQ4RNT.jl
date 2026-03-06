@@ -41,11 +41,12 @@ version = "3.5.2+0"
 
 [[deps.ArrayInterface]]
 deps = ["Adapt", "LinearAlgebra"]
-git-tree-sha1 = "d81ae5489e13bc03567d4fbbb06c546a5e53c857"
+git-tree-sha1 = "78b3a7a536b4b0a747a0f296ea77091ca0a9f9a3"
 uuid = "4fba245c-0d91-5ea0-9b3e-6abc04ee57a9"
-version = "7.22.0"
+version = "7.23.0"
 
     [deps.ArrayInterface.extensions]
+    ArrayInterfaceAMDGPUExt = "AMDGPU"
     ArrayInterfaceBandedMatricesExt = "BandedMatrices"
     ArrayInterfaceBlockBandedMatricesExt = "BlockBandedMatrices"
     ArrayInterfaceCUDAExt = "CUDA"
@@ -60,6 +61,7 @@ version = "7.22.0"
     ArrayInterfaceTrackerExt = "Tracker"
 
     [deps.ArrayInterface.weakdeps]
+    AMDGPU = "21141c5a-9bdb-4563-92ae-f87d6854732e"
     BandedMatrices = "aae01518-5342-5314-be14-df237901396f"
     BlockBandedMatrices = "ffab5731-97b5-5995-9138-79e8c1846df0"
     CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
@@ -289,9 +291,9 @@ version = "1.16.0"
 
 [[deps.FinEtools]]
 deps = ["DataDrop", "DelimitedFiles", "HDF5", "LinearAlgebra", "LoopVectorization", "Printf", "Random", "SparseArrays", "Statistics", "SymRCM", "Test", "Unicode", "WriteVTK"]
-git-tree-sha1 = "7b0946a85864159336439eab3edd673ae4d60715"
+git-tree-sha1 = "2a8ab220d9919aa2410ca4f94e029e3807c55d68"
 uuid = "91bb5406-6c9a-523d-811d-0644c4229550"
-version = "8.2.4"
+version = "8.2.5"
 
 [[deps.FinEtoolsAcoustics]]
 deps = ["Arpack", "FinEtools", "LinearAlgebra", "SparseArrays", "Statistics", "Test"]
@@ -307,11 +309,9 @@ version = "3.0.6"
 
 [[deps.FinEtoolsFlexStructures]]
 deps = ["Arpack", "DataDrop", "Dierckx", "FinEtools", "FinEtoolsDeforLinear", "LinearAlgebra", "SparseArrays", "SparseMatricesCSR", "Statistics", "SymRCM", "Test"]
-git-tree-sha1 = "118c64c2ad48b7ed643cfd50158b746a68b86987"
-repo-rev = "main"
-repo-url = "https://github.com/PetrKryslUCSD/FinEtoolsFlexStructures.jl.git"
+git-tree-sha1 = "e405d31bb99799fce3b2769635c32526a928401c"
 uuid = "723391e6-6814-4d1d-921c-018f691214d8"
-version = "3.3.0"
+version = "3.3.1"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -374,9 +374,9 @@ version = "0.1.1"
 
 [[deps.Infiltrator]]
 deps = ["InteractiveUtils", "Markdown", "REPL", "UUIDs"]
-git-tree-sha1 = "ba35ce115db3376901a32d28df137b8221595931"
+git-tree-sha1 = "2d7f26e8732211eaa00acf357e15c5ae3d303db6"
 uuid = "5903a43b-9cc3-4c30-8d17-598619ec4e9b"
-version = "1.9.8"
+version = "1.9.9"
 
 [[deps.InteractiveUtils]]
 deps = ["Markdown"]
