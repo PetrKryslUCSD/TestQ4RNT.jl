@@ -51,5 +51,13 @@ Beware: running the above will first clean all the output files from the previou
 The `runtests.jl` script in the `test` folder shows which examples are executed in the tests.
 These are all files ending in `_examples.jl`. Feel free to browse the source code in these files.
 
+## Benchmarks
+
+
+The `benchmarks` directory provides benchmarking versions of the tests. Each individual benchmark
+may be run on its own.
+
+## Implementation
+
 The functionality of the shell finite element is provided by the package
 [`FinEtoolsFlexStructures`](https://github.com/PetrKryslUCSD/FinEtoolsFlexStructures.jl). The implementation may be inspected there.
