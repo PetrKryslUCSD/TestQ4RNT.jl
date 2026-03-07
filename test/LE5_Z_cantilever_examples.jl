@@ -31,10 +31,11 @@ using FinEtoolsFlexStructures.RotUtilModule: initial_Rfield, update_rotation_fie
 using VisualStructures: plot_nodes, plot_midline, render, plot_space_box, plot_midsurface, space_aspectratio, save_to_json
 using FinEtools.MeshExportModule.VTKWrite: vtkwrite
 
-function zcant!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, fe_label::FInt, qpid::FInt)  
-    r = vec(deepcopy(XYZ)); 
-    cross3!(r, view(tangents, :, 1), view(tangents, :, 2))
-    csmatout[:, 3] .= vec(r)/norm(vec(r))
+function zcant!(csmatout::FFltMat, XYZ::FFltMat, tangents::FFltMat, fe_label::FInt, qpid::FInt) 
+    n = vec(csmatout[:, 3]) 
+    cross3!(n, view(tangents, :, 1), view(tangents, :, 2))
+    nn = norm(n)
+    csmatout[:, 3] = n ./ nn
     csmatout[:, 1] .= (1.0, 0.0, 0.0)
     cross3!(view(csmatout, :, 2), view(csmatout, :, 3), view(csmatout, :, 1))
     return csmatout
@@ -172,7 +173,7 @@ function test_convergence()
     formul = FEMMShellQ4RSModule
     @info "LE5 Z-cantilever,\n   formulation=$(formul)"
     pointAstressX = Float64[]
-    for n in [0, 1, 2, 3, 4, 5, 6, 7]
+    for n in [0, 1, 2, 3, 4, 5, ]
         s = _executemodel(formul, "nle5-q4.inp", n, false)
         push!(pointAstressX, s[1])
     end
@@ -188,7 +189,7 @@ m = LE5_Z_cantilever_examples
 
 let
     @show pointAstressX = m.test_convergence()
-    ns = 2 .^  [0, 1, 2, 3, 4, 5, 6, 7]
+    ns = 2 .^  [0] #[0, 1, 2, 3, 4, 5, ]
 
     objects = []
 
